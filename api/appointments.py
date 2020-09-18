@@ -21,7 +21,7 @@ class GetMyAppointments(APIView):
                     Q(provider=user) |
                     Q(patient=user)
             ) &
-            Q(end_time__gt=utcnow() - timedelta(minutes=30)) &
+            Q(end_time__gt=utcnow() - timedelta(minutes=30)) &  # Check that the appointment hasn't ended yet
             Q(explicitly_ended=False) &
             Q(canceled=False)
         ).all())
@@ -33,7 +33,13 @@ class GetMyAppointments(APIView):
             "provider_uuid": appointment.provider.uuid,
             "start_time": appointment.start_time.isoformat(timespec="minutes"),
             "end_time": appointment.end_time.isoformat(timespec="minutes"),
-            "explicitly_ended": appointment.explicitly_ended
+            "explicitly_ended": appointment.explicitly_ended,
+            "patient_first_name": appointment.patient.first_name,
+            "patient_last_name": appointment.patient.last_name,
+            "patient_full_name": f"{appointment.patient.first_name} {appointment.patient.last_name}",
+            "provider_first_name": appointment.provider.first_name,
+            "provider_last_name": appointment.provider.last_name,
+            "provider_full_name": f"{appointment.provider.first_name} {appointment.provider.last_name}"
         } for appointment in appointments]
 
         return jsonify(result=result)
