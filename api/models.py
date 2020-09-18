@@ -85,16 +85,16 @@ class User(VersionedEntity, AbstractBaseUser, PermissionsMixin):
         ),
     )
 
-    first_name = models.CharField(max_length=30, null=True)
-    last_name = models.CharField(max_length=30, null=True)
+    first_name = models.CharField(max_length=30, null=True, blank=True)
+    last_name = models.CharField(max_length=30, null=True, blank=True)
 
-    birthday = models.DateField(null=True)
+    birthday = models.DateField(null=True, blank=True)
 
-    bio = models.TextField(null=True)
+    bio = models.TextField(null=True, blank=True)
 
-    profile_image_s3 = models.CharField(max_length=32, null=True)
+    profile_image_s3 = models.CharField(max_length=32, null=True, blank=True)
 
-    provider = models.ForeignKey("self", on_delete=models.PROTECT, null=True)
+    provider = models.ForeignKey("self", on_delete=models.PROTECT, null=True, blank=True)
 
     USERNAME_FIELD = "email"
 
@@ -128,13 +128,13 @@ class SessionToken(models.Model):
     # Tokens for OpenTok sessions
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=SESSION_TOKEN_LENGTH, unique=True)
-    expires = models.DateTimeField(null=True)
+    expires = models.DateTimeField(null=True, blank=True)
 
 
 class AvailabilitySchedule(VersionedEntity):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(null=True, blank=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
     days_of_week = models.IntegerField()
@@ -147,7 +147,7 @@ class Appointment(VersionedEntity):
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
 
-    ot_session_id = models.CharField(max_length=128, unique=True, null=True)
+    ot_session_id = models.CharField(max_length=128, unique=True, null=True, blank=True)
 
     canceled = models.BooleanField(default=False)
 
