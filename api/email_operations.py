@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.conf import settings
@@ -62,7 +63,10 @@ def send_password_reset(user: User):
     )
 
     if not settings.RUNNING_DEVSERVER:
-        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
-        sg.send(message)
+        try:
+            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            sg.send(message)
+        except:
+            logging.exception("Failed to send verification email.")
     else:
         print("Sent!", token.token)
