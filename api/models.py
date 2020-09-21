@@ -140,6 +140,14 @@ class AvailabilitySchedule(VersionedEntity):
     days_of_week = models.IntegerField()
 
 
+class AppointmentRequest(VersionedEntity):
+    patient = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointment_requests_as_patient")
+    provider = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointment_requests_as_provider")
+
+    start_time = models.DateTimeField(db_index=True)
+    end_time = models.DateTimeField()
+
+
 class Appointment(VersionedEntity):
     patient = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointments_as_patient")
     provider = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointments_as_provider")

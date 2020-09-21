@@ -36,7 +36,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         norm_email = value.lower()
 
-        if not re.search(r'^[a-z0-9]+[._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', norm_email):
+        if not re.search(r'\S+@\S+\.\S+', norm_email):
             raise serializers.ValidationError("Invalid email format.")
 
         if models.User.objects.filter(email=norm_email).exists():

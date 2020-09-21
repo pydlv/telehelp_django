@@ -166,6 +166,7 @@ class GetAvailableAppointments(APIView):
 
 
 class ScheduleAppointment(APIView):
+    # TODO: Remove this view later
     def post(self, request):
         serializer = serializers.ScheduleAppointmentSerializer(data=request.data)
 

@@ -21,16 +21,16 @@ def jsonify_old(value, *args, **kwargs):
         return JsonResponse(value, *args, **kwargs)
 
 
-def jsonify(*args, status=status.HTTP_200_OK, **kwargs):
+def jsonify(*args, status=status.HTTP_200_OK, safe=False, **kwargs):
     if args and kwargs:
         raise ValueError("Jsonify does not support both args and kwargs.")
 
     if len(args) == 1:
-        return JsonResponse(*args, status=status)
+        return JsonResponse(*args, status=status, safe=safe)
     elif args:
-        return JsonResponse(list(*args), status=status)
+        return JsonResponse(list(*args), status=status, safe=safe)
     else:
-        return JsonResponse(dict(kwargs), status=status)
+        return JsonResponse(dict(kwargs), status=status, safe=safe)
 
 
 def bad_request(*args, **kwargs):

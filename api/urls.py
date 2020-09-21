@@ -2,7 +2,8 @@ from django.conf.urls import url
 from django.urls import path, include
 
 import api.auth
-from api import profiles, providers, schedules, appointments, video_sessions
+from api import profiles, providers, schedules, video_sessions
+from api.appointments import appointments
 
 urlpatterns = [
     # Auth
@@ -32,6 +33,7 @@ urlpatterns = [
     path("availability-schedules/delete", schedules.DeleteAvailabilitySchedule.as_view()),
 
     # Appointments
+    path("appointments/", include("api.appointments.urls")),
     path("get-my-appointments", appointments.GetMyAppointments.as_view()),
     path("get-available-appointments", appointments.GetAvailableAppointments.as_view()),
     path("schedule-appointment", appointments.ScheduleAppointment.as_view()),
