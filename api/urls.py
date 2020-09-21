@@ -36,7 +36,6 @@ urlpatterns = [
     path("appointments/", include("api.appointments.urls")),
     path("get-my-appointments", appointments.GetMyAppointments.as_view()),
     path("get-available-appointments", appointments.GetAvailableAppointments.as_view()),
-    path("schedule-appointment", appointments.ScheduleAppointment.as_view()),
     path("cancel-appointment", appointments.CancelAppointment.as_view()),
     path("get-ot-token/<str:appointment_uuid>", video_sessions.GetOTToken.as_view()),
     path("end-appointment/<str:appointment_uuid>", video_sessions.EndAppointment.as_view()),
