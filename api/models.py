@@ -101,12 +101,10 @@ class User(VersionedEntity, AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        result = self.email
-        if self.first_name is not None:
-            result += f" {self.first_name}"
-        if self.last_name is not None:
-            result += f" {self.last_name}"
-        return result
+        return self.email
+
+    # def has_perm(self, perm, obj=None):
+    #     return self.is_admin
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -141,9 +139,6 @@ class AvailabilitySchedule(VersionedEntity):
     end_time = models.TimeField()
     days_of_week = models.IntegerField()
 
-    def __str__(self):
-        return f"Availability Schedule {self.id} - {self.user.email}"
-
 
 class AppointmentRequest(VersionedEntity):
     patient = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointment_requests_as_patient")
@@ -151,9 +146,6 @@ class AppointmentRequest(VersionedEntity):
 
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
-
-    def __str__(self):
-        return f"Appointment Request {self.id} - pt {self.patient.email}, pv {self.provider.email}"
 
 
 class Appointment(VersionedEntity):
@@ -168,6 +160,3 @@ class Appointment(VersionedEntity):
     canceled = models.BooleanField(default=False)
 
     explicitly_ended = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Appointment {self.id} - pt {self.patient.email}, pv {self.provider.email}"
