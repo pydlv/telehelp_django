@@ -5,19 +5,19 @@ from api.models import User, AvailabilitySchedule, Appointment, AppointmentReque
 
 
 class UserAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "first_name", "last_name", "account_type"]
 
 
 class AvailabilityScheduleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "user"]
 
 
 class AppointmentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "patient", "provider", "start_time", "end_time", "canceled", "explicitly_ended"]
 
 
 class AppointmentRequestAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "patient", "provider", "start_time", "end_time"]
 
 
 admin.site.register(User, UserAdmin)

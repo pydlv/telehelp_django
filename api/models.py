@@ -101,10 +101,12 @@ class User(VersionedEntity, AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return self.email
-
-    # def has_perm(self, perm, obj=None):
-    #     return self.is_admin
+        name = ""
+        if self.first_name is not None:
+            name += f"{self.first_name}"
+        if self.last_name is not None:
+            name += f" {self.last_name}"
+        return f"{self.email}{' (' + name + ')' if name else ''}"
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
