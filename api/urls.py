@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import path, include
 
 import api.auth
-from api import profiles, providers, schedules, video_sessions
+from api import profiles, providers, schedules, video_sessions, push_notifs
 from api.appointments import appointments
 
 urlpatterns = [
@@ -12,6 +12,9 @@ urlpatterns = [
 
     path('verify/', include('api.email_verification.urls')),
     path('', include("api.password_change.urls")),
+
+    # Device registration for push notifications
+    path("device/", include(push_notifs.router.urls)),
 
     # Profile
     url(r"^profile/", profiles.GetProfile.as_view()),

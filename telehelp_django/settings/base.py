@@ -19,19 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@x%ss&+kq@5ra94s4w)y#0i%m-zadk^bbd#upgo+j8k!)zfq41'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-RUNNING_DEVSERVER = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
-
-ALLOWED_HOSTS = []
-
-
 # Application definition
-
 INSTALLED_APPS = [
     'api',
 
@@ -42,7 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
+    "push_notifications"
 ]
 
 AUTH_USER_MODEL = "api.User"
@@ -148,9 +137,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-# SendGrid stuff
-SENDGRID_API_KEY = "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"
-
 # S3 Settings
 REGION_NAME = "nyc3"
 ENDPOINT_URL = "https://nyc3.digitaloceanspaces.com"
@@ -161,31 +147,3 @@ BUCKET_NAME = "telehelp-storage"
 # OpenTok/TokBox Settings
 TOKBOX_API_KEY = "46836644"
 TOKBOX_API_SECRET = "f16da0888269be6e38a45fc79256fe5ec42e15ff"
-
-# Log settings
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/django_debug.log',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        }
-    }
-}
-
-if DEBUG:
-    # make all loggers use the console.
-    for logger in LOGGING['loggers']:
-        LOGGING['loggers'][logger]['handlers'] = ['console']

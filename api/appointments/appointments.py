@@ -9,6 +9,7 @@ from api import serializers
 from api.consts import APPOINTMENT_BLOCK_TIME
 from api.enums import DayOfWeek
 from api.models import User, Appointment, AvailabilitySchedule
+from api.notifications import notify_all
 from api.util import utcnow, jsonify
 
 
@@ -196,6 +197,11 @@ class CancelAppointment(APIView):
         appointment.canceled = True
         appointment.save()
 
-        # TODO: Notify both parties
+        # Notify both parties
+        notify_all(
+            [appointment.patient, appointment.provider],
+            "Appointment Canceled",
+            "One of your appointments has been canceled. Please check the app."
+        )
 
         return jsonify(msg="success")

@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from api.appointments.appointments import isoweekday_to_enum_weekday
 from api.consts import APPOINTMENT_BLOCK_TIME
 from api.models import AppointmentRequest, Appointment, User, AvailabilitySchedule
+from api.notifications import notify_all
 from api.util import jsonify, MySerializer
 
 
@@ -106,16 +107,21 @@ class CreateAppointmentRequest(APIView):
         if not meets_schedule_requirements:
             return jsonify(error="That does is not a valid appointment time.", status=400)
 
-        appointment_request = AppointmentRequest(
-            patient=user,
-            provider=provider,
-            start_time=dt,
-            end_time=dt_end
-        )
+        with transaction.atomic():
+            appointment_request = AppointmentRequest(
+                patient=user,
+                provider=provider,
+                start_time=dt,
+                end_time=dt_end
+            )
 
-        appointment_request.save()
+            appointment_request.save()
 
-        # TODO: Notify the other party
+            notify_all(
+                user.provider,
+                "New Appointment Request",
+                "One of your clients has requested an appointment. Please open the app to confirm it."
+            )
 
         return jsonify(message="success")
 
@@ -168,7 +174,20 @@ class AcceptAppointmentRequest(APIView):
 
             appointment.save()
 
-        # TODO: Notify the other party
+        # Notify the provider
+        notify_all(
+            appointment_request.provider,
+            "Confirmed Appointment",
+            "You have accepted a new appointment! Please open the app to view it."
+        )
+
+        # Notify the client
+        notify_all(
+            appointment_request.patient,
+            "Confirmed Appointment",
+            "You provider has accepted one of your appointment requests. Please open the app to see your "
+            "scheduled appointment."
+        )
 
         return jsonify(message="success", uuid=appointment.uuid)
 
@@ -188,6 +207,12 @@ class DeclineAppointmentRequest(APIView):
 
         appointment_request.delete()
 
-        # TODO: Notify the other party
+        if appointment_request.patient != request.user:
+            # Notify the client
+            notify_all(
+                appointment_request.patient,
+                "Appointment Request Declined",
+                "Your provider has declined your appointment request. Please open the app to request a different time."
+            )
 
         return jsonify(message="success")
