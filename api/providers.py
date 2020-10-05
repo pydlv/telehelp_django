@@ -9,11 +9,14 @@ from api.util import jsonify_old, jsonify
 
 
 def get_provider_view(provider: User):
+    first_name = provider.first_name if provider.first_name else ""
+    last_name = provider.last_name if provider.last_name else ""
+
     return {
         "uuid": provider.uuid,
-        "full_name": provider.first_name + " " + provider.last_name,
-        "first_name": provider.first_name,
-        "last_name": provider.last_name,
+        "full_name": first_name + " " + last_name,
+        "first_name": first_name,
+        "last_name": last_name,
         "bio": provider.bio,
         "profile_image_s3": provider.profile_image_s3
     }
