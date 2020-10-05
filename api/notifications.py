@@ -1,3 +1,4 @@
+import logging
 from typing import Union, List
 
 from django.core.mail import send_mail
@@ -32,8 +33,11 @@ def notify_all(users: Union[User, List[User]], title: str, message: str):
 
 
 def send_push(user: User, message: str):
-    gmc_devices = GCMDevice.objects.filter(user=user)
-    gmc_devices.send_message(message)
+    try:
+        gmc_devices = GCMDevice.objects.filter(user=user)
+        gmc_devices.send_message(message)
 
-    apns_devices = APNSDevice.objects.filter(user=user)
-    apns_devices.send_message(message)
+        apns_devices = APNSDevice.objects.filter(user=user)
+        apns_devices.send_message(message)
+    except Exception as e:
+        logging.error("Something went wrong while trying to send push notification.")

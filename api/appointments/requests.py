@@ -107,21 +107,21 @@ class CreateAppointmentRequest(APIView):
         if not meets_schedule_requirements:
             return jsonify(error="That does is not a valid appointment time.", status=400)
 
-        with transaction.atomic():
-            appointment_request = AppointmentRequest(
-                patient=user,
-                provider=provider,
-                start_time=dt,
-                end_time=dt_end
-            )
 
-            appointment_request.save()
+        appointment_request = AppointmentRequest(
+            patient=user,
+            provider=provider,
+            start_time=dt,
+            end_time=dt_end
+        )
 
-            notify_all(
-                user.provider,
-                "New Appointment Request",
-                "One of your clients has requested an appointment. Please open the app to confirm it."
-            )
+        appointment_request.save()
+
+        notify_all(
+            user.provider,
+            "New Appointment Request",
+            "One of your clients has requested an appointment. Please open the app to confirm it."
+        )
 
         return jsonify(message="success")
 
