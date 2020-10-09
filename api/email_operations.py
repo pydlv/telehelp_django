@@ -2,6 +2,7 @@ import logging
 import os
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sendgrid import SendGridAPIClient, Mail
@@ -54,22 +55,16 @@ def send_password_reset(user: User):
 
     token.save()
 
-    link = f"https://telehelp.giraffemail.org/api/reset-password/{token.token}"
-
-    message = Mail(
-        from_email='no-reply@telehelp.giraffemail.org',
-        to_emails=user.email,
-        subject='Teletherapy Password Reset',
-        html_content=f"We received a request to reset the password for your teletherapy account. "
-                     f"If this was you, then you may reset your password by clicking this link: "
-                     f'<a href="{link}">{link}</a>. Otherwise, you can safely ignore this email.'
-    )
+    link = f"https://django.giraffemail.org/api/reset-password/{token.token}"
 
     if not settings.RUNNING_DEVSERVER:
-        try:
-            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
-            sg.send(message)
-        except:
-            logging.exception("Failed to send password reset email.")
+        send_mail(
+            "ATMH Password Reset Token",
+            f"We received a request to reset the password for your teletherapy account. "
+            f"If this was you, then you may reset your password by clicking this link: "
+            f'<a href="{link}">{link}</a>. Otherwise, you can safely ignore this email.',
+            "no-reply@affordtelemental.com",
+            [user.email]
+        )
     else:
         print("Sent!", token.token)
