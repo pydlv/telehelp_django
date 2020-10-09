@@ -61,8 +61,8 @@ def send_password_reset(user: User):
         send_mail(
             "ATMH Password Reset Token",
             f"We received a request to reset the password for your teletherapy account. "
-            f"If this was you, then you may reset your password by clicking this link: "
-            f'<a href="{link}">{link}</a>. Otherwise, you can safely ignore this email.',
+            f"If this was you, then you may reset your password by visiting this link: "
+            f'{link}. Otherwise, you can safely ignore this email.',
             "no-reply@affordtelemental.com",
             [user.email]
         )
