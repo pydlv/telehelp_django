@@ -42,6 +42,10 @@ class ObtainAuthToken(APIView):
         )
 
     def post(self, request, *args, **kwargs):
+        # TODO: Update all the emails in production to be lower case
+        if "username" in request.data:
+            request.data["username"] = request.data["username"].lower()
+
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)

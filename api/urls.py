@@ -22,11 +22,7 @@ urlpatterns = [
     path("upload-profile-picture", profiles.UploadProfilePicture.as_view()),
 
     # Providers
-    path("listproviders", providers.ListProviders.as_view()),
-    path("getprovider/<str:pid>", providers.GetProviderInformation.as_view()),
-
-    url(r"^getassignedprovider/", providers.GetAssignedProvider.as_view()),
-    path("assignprovider", providers.AssignProvider.as_view()),
+    path("providers/", include("api.providers.urls")),
 
     # Schedules
     path("get-availability-schedules", schedules.GetAvailabilitySchedules.as_view()),

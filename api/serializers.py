@@ -52,6 +52,10 @@ class EditProfileSerializer(MySerializer):
     bio = serializers.CharField(allow_null=True)
 
 
+class UUIDSerializer(MySerializer):
+    uuid = serializers.UUIDField()
+
+
 class AssignProviderSerializer(MySerializer):
     uuid = serializers.UUIDField()
 

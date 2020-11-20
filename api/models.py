@@ -1,5 +1,6 @@
 import uuid as uuid
 from datetime import datetime, timedelta
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
@@ -8,6 +9,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 from api.consts import SESSION_TOKEN_LENGTH
@@ -42,6 +44,8 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("User must have an email address.")
 
+        email = email.lower()
+
         user = self.model(
             email=self.normalize_email(email)
         )
@@ -51,6 +55,8 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password):
+        email = email.lower()
+
         user = self.create_user(
             email=email,
             password=password
@@ -150,6 +156,11 @@ class AppointmentRequest(VersionedEntity):
     end_time = models.DateTimeField()
 
 
+class ProviderRequest(VersionedEntity):
+    patient = models.ForeignKey(User, on_delete=models.PROTECT, related_name="provider_requests_as_patient")
+    provider = models.ForeignKey(User, on_delete=models.PROTECT, related_name="provider_requests_as_provider")
+
+
 class Appointment(VersionedEntity):
     patient = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointments_as_patient")
     provider = models.ForeignKey(User, on_delete=models.PROTECT, related_name="appointments_as_provider")
@@ -162,3 +173,15 @@ class Appointment(VersionedEntity):
     canceled = models.BooleanField(default=False)
 
     explicitly_ended = models.BooleanField(default=False)
+
+
+class RelatedUserField(serializers.RelatedField):
+    def to_representation(self, user: Optional[User]):
+        if user is None:
+            return None
+
+        return {
+            "uuid": user.uuid,
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        }

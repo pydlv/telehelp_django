@@ -1,6 +1,7 @@
 import logging
 from typing import Union, List
 
+from django.conf import settings
 from django.core.mail import send_mail
 from push_notifications.models import GCMDevice, APNSDevice
 
@@ -16,12 +17,13 @@ def notify_all(users: Union[User, List[User]], title: str, message: str):
     :return:
     """
     def notify_user(user: User):
-        send_mail(
-            title,
-            message,
-            "no-reply@giraffemail.org",
-            [user.email]
-        )
+        if not settings.DEBUG:
+            send_mail(
+                title,
+                message,
+                "no-reply@giraffemail.org",
+                [user.email]
+            )
 
         send_push(user, message)
 

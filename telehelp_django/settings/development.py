@@ -8,7 +8,7 @@ DEBUG = True
 
 RUNNING_DEVSERVER = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["172.26.5.185", "127.0.0.1"]
 
 
 # Email settings
@@ -37,13 +37,15 @@ PUSH_NOTIFICATIONS_SETTINGS = {
             "API_KEY": "AAAANVO1_XE:APA91bF3p4vfxvIQRt4JMtP0HK8YbrE7J0tHQgRCYdKJCEWewbgquGlOrpez1NnzdIP6REbkuFbtDM0erdI"
                        "kng7Vqnij3VnUTA7mLqRREDxwbVGmW6Qbd88gpZ3O4vBr5muSw8-b1zeI",
         },
-        # "telehelp_push_ios": {
-        #   # PLATFORM (required) determines what additional settings are required.
-        #   "PLATFORM": "APNS",
-        #
-        #   # required APNS setting
-        #   "CERTIFICATE": "/path/to/your/certificate.pem",
-        # }
+        "telehelp_push_apns": {
+            # PLATFORM (required) determines what additional settings are required.
+            "PLATFORM": "APNS",
+
+            # required APNS setting
+            "CERTIFICATE": "./telehelp_django/settings/certs/aps-dev.pem",
+
+            "USE_SANDBOX": True
+        }
     }
 }
 

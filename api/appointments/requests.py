@@ -8,21 +8,9 @@ from rest_framework.views import APIView
 
 from api.appointments.appointments import isoweekday_to_enum_weekday
 from api.consts import APPOINTMENT_BLOCK_TIME
-from api.models import AppointmentRequest, Appointment, User, AvailabilitySchedule
-from api.notifications import notify_all
+from api.models import AppointmentRequest, Appointment, User, AvailabilitySchedule, RelatedUserField
+from api.notifications import notify_all, send_push
 from api.util import jsonify, MySerializer
-
-
-class RelatedUserField(serializers.RelatedField):
-    def to_representation(self, user: Optional[User]):
-        if user is None:
-            return None
-
-        return {
-            "uuid": user.uuid,
-            "first_name": user.first_name,
-            "last_name": user.last_name
-        }
 
 
 class AppointmentRequestSerializer(serializers.ModelSerializer):
